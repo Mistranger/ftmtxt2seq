@@ -128,7 +128,7 @@ void ITFile::generate2A03Instruments()
 		}
 		this->samples.push_back(sample);
 	}
-	this->generateNoiseSamples();
+	//this->generateNoiseSamples();
 }
 
 void ITFile::generateNoiseSamples()
@@ -220,7 +220,7 @@ void ITFile::convertFTMtxt(const FTMtxt &ftmtxt)
 	this->generate2A03Instruments();
 	this->orderNum = ftmtxt.patternOrder.size();
 	this->insNum = 0; // fixme
-	this->smpNum = ftmtxt.sampleList.size() + 5 + 16;
+	this->smpNum = ftmtxt.sampleList.size() + 5;
 	this->patNum = ftmtxt.PatternList.size();
 
 	int c = 0;
@@ -368,6 +368,11 @@ void ITFile::ITPattern::convertFTMpattern(const FTMPattern &pattern, const FTMtx
 			if (entry.effect2 == 'V' && (channel == 1 || channel == 2)) { // square duty
 				maskVar[channel - 1] = static_cast<mask>(maskVar[channel - 1] | M_Instrument);
 				instrument[channel - 1] = entry.effect2data + 1; // fixme
+			}
+			// triangle channel
+			if (channel == 3 && it == pattern.begin()) {
+				maskVar[channel - 1] = static_cast<mask>(maskVar[channel - 1] | M_Instrument);
+				instrument[channel - 1] = 5; // fixme
 			}
 
 			if (maskVar[channel - 1] != maskVarPrev[channel - 1]) {
